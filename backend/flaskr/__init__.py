@@ -1,3 +1,5 @@
+"""Init module for trivia app."""
+
 import os
 from flask import Flask, json, request, abort, jsonify
 from sqlalchemy.orm import query
@@ -13,7 +15,12 @@ from constants import QUESTIONS_PER_PAGE, HTTP_STATUS
 
 
 def create_app(test_config=None):
-  # create and configure the app
+  """
+  Create & configure the app.
+
+  :param test_config:
+  :return:
+  """
   app = Flask(__name__)
   setup_db(app)
 
@@ -22,19 +29,30 @@ def create_app(test_config=None):
   # CORS headers
   @app.after_request
   def after_request(response):
-        response.headers.add(
-          'Access-Control-Allow-Headers', 'Content-Type, Authorization')
-        response.headers.add(
-          'Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
-        return response
+    """
+    Set response headers after request.
+
+    :param response:
+    :return:
+    """
+    response.headers.add(
+    'Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    response.headers.add(
+    'Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
+    return response
 
 
   @app.route('/categories')
   def get_categories():
-        return jsonify({
-          'success': True,
-          'categories': get_formatted_categories(),
-        })
+    """
+    Return all categories.
+
+    :return:
+    """
+    return jsonify({
+        'success': True,
+        'categories': get_formatted_categories(),
+      })
 
 
   '''
@@ -47,20 +65,25 @@ def create_app(test_config=None):
   '''
   @app.route('/questions')
   def get_questions():
-        questions = Question.query.order_by(Question.id).all()
+    """
+    Return paginated questions.
 
-        if not questions:
-              abort(HTTP_STATUS.NOT_FOUND)
+    :return:
+    """
+    questions = Question.query.order_by(Question.id).all()
 
-        paginated_response = paginated_data(request, questions, QUESTIONS_PER_PAGE)
+    if not questions:
+          abort(HTTP_STATUS.NOT_FOUND)
 
-        return jsonify({
-          'success': True,
-          'questions': paginated_response,
-          'total_questions': len(questions),
-          'categories': get_formatted_categories(),
-          'current_category': None
-        })
+    paginated_response = paginated_data(request, questions, QUESTIONS_PER_PAGE)
+
+    return jsonify({
+      'success': True,
+      'questions': paginated_response,
+      'total_questions': len(questions),
+      'categories': get_formatted_categories(),
+      'current_category': None
+    })
 
   '''
   @TODO:
@@ -70,15 +93,21 @@ def create_app(test_config=None):
   '''
   @app.route('/questions/<int:question_id>', methods=['DELETE'])
   def delete_question(question_id):
-        question = Question.query.get(question_id)
-        if not question:
-            abort(HTTP_STATUS.NOT_FOUND)
+    """
+    Delete question.
 
-        question.delete()
+    :param question_id:
+    :return:
+    """
+    question = Question.query.get(question_id)
+    if not question:
+        abort(HTTP_STATUS.NOT_FOUND)
 
-        return jsonify({
-          'success': True
-        }), HTTP_STATUS.NO_CONTENT
+    question.delete()
+
+    return jsonify({
+      'success': True
+    }), HTTP_STATUS.NO_CONTENT
 
 
   '''
@@ -90,18 +119,23 @@ def create_app(test_config=None):
   '''
   @app.route('/questions', methods=['POST'])
   def create_question():
-        question = request.get_json()
+    """
+    Create question.
 
-        if not question:
-            abort(HTTP_STATUS.BAD_REQUEST)
+    :return:
+    """
+    question = request.get_json()
 
-        question = Question(**question)
-        question.insert()
+    if not question:
+        abort(HTTP_STATUS.BAD_REQUEST)
 
-        return jsonify({
-          'success': True,
-          'id': question.id
-        }), HTTP_STATUS.CREATED
+    question = Question(**question)
+    question.insert()
+
+    return jsonify({
+      'success': True,
+      'id': question.id
+    }), HTTP_STATUS.CREATED
 
   '''
   @TODO:
@@ -112,13 +146,19 @@ def create_app(test_config=None):
   '''
   @app.route('/questions/search', methods=['POST'])
   def search_questions():
-        search_term = request.get_json().get('searchTerm')
-        questions = [question.format() for question in Question.query.filter(
-          Question.question.ilike(f'%{search_term}%'))]
-        return jsonify({
-          'success': True,
-          'questions': questions,
-        })
+    """
+    Search question.
+
+    :param question_id:
+    :return:
+    """
+    search_term = request.get_json().get('searchTerm')
+    questions = [question.format() for question in Question.query.filter(
+      Question.question.ilike(f'%{search_term}%'))]
+    return jsonify({
+      'success': True,
+      'questions': questions,
+    })
 
   '''
   @TODO:
@@ -129,20 +169,26 @@ def create_app(test_config=None):
   '''
   @app.route('/categories/<int:category_id>/questions')
   def get_questions_by_category(category_id):
-        category = Category.query.get(category_id)
-        if not category:
-              abort(HTTP_STATUS.NOT_FOUND)
+    """
+    Get question by category.
 
-        questions = [
-          question.format()
-          for question in Question.query.filter_by(category=category_id)]
+    :param category_id:
+    :return:
+    """
+    category = Category.query.get(category_id)
+    if not category:
+          abort(HTTP_STATUS.NOT_FOUND)
 
-        return jsonify({
-          'success': True,
-          'questions': questions,
-          'total_questions': len(questions),
-          'current_category': category.format()
-        })
+    questions = [
+      question.format()
+      for question in Question.query.filter_by(category=category_id)]
+
+    return jsonify({
+      'success': True,
+      'questions': questions,
+      'total_questions': len(questions),
+      'current_category': category.format()
+    })
 
   '''
   @TODO:
@@ -153,54 +199,84 @@ def create_app(test_config=None):
   '''
   @app.route('/quizzes', methods=['POST'])
   def play_quiz():
-        request_data = request.get_json()
-        category = request_data.get('quiz_category')
-        previous_questions = request_data.get('previous_questions', [])
+    """
+    Play quiz.
 
-        if not category:
-              abort(HTTP_STATUS.BAD_REQUEST)
+    :return:
+    """
+    request_data = request.get_json()
+    category = request_data.get('quiz_category')
+    previous_questions = request_data.get('previous_questions', [])
 
-        category_id = category.get('id')
-        filters = [Question.id.notin_(previous_questions)]
-        if category_id:
-              filters.append(Question.category == category_id)
-        questions = Question.query.filter(*filters)
+    if not category:
+          abort(HTTP_STATUS.BAD_REQUEST)
 
-        questions = [question.format() for question in questions]
-        random_question = random.choice(questions) if questions else None
-        return jsonify({
-          'success': True,
-          'question': random_question,
+    category_id = category.get('id')
+    filters = [Question.id.notin_(previous_questions)]
+    if category_id:
+          filters.append(Question.category == category_id)
+    questions = Question.query.filter(*filters)
+
+    questions = [question.format() for question in questions]
+    random_question = random.choice(questions) if questions else None
+    return jsonify({
+      'success': True,
+      'question': random_question,
         })
 
-  '''
-  @TODO:
-  Create error handlers for all expected errors
-  including 404 and 422.
-  '''
 
   @app.errorhandler(HTTP_STATUS.NOT_FOUND)
   def not_found(error):
-      return error_response(HTTP_STATUS.NOT_FOUND)
+    """
+    Error handler for status code 404.
+
+    :param error:
+    :return:
+    """
+    return error_response(HTTP_STATUS.NOT_FOUND)
 
 
   @app.errorhandler(HTTP_STATUS.BAD_REQUEST)
-  def not_found(error):
-      return error_response(HTTP_STATUS.BAD_REQUEST)
+  def bad_request(error):
+    """
+    Error handler for status code 400.
+
+    :param error:
+    :return:
+    """
+    return error_response(HTTP_STATUS.BAD_REQUEST)
 
 
   @app.errorhandler(HTTP_STATUS.UNPROCESSABLE_ENTITY)
   def unprocessable_entity(error):
-      return error_response(HTTP_STATUS.UNPROCESSABLE_ENTITY)
+    """
+    Error handler for status code 422.
+
+    :param error:
+    :return:
+    """
+    return error_response(HTTP_STATUS.UNPROCESSABLE_ENTITY)
 
 
   @app.errorhandler(HTTP_STATUS.INTERNAL_SERVER_ERROR)
-  def unprocessable_entity(error):
-      return error_response(HTTP_STATUS.INTERNAL_SERVER_ERROR)
+  def internal_server_error(error):
+    """
+    Error handler for status code 500.
+
+    :param error:
+    :return:
+    """
+    return error_response(HTTP_STATUS.INTERNAL_SERVER_ERROR)
 
 
   @app.errorhandler(HTTP_STATUS.METHOD_NOT_ALLOWED)
-  def unprocessable_entity(error):
-      return error_response(HTTP_STATUS.METHOD_NOT_ALLOWED)
+  def method_not_allowed(error):
+    """
+    Error handler for status code 405.
+
+    :param error:
+    :return:
+    """
+    return error_response(HTTP_STATUS.METHOD_NOT_ALLOWED)
 
   return app

@@ -1,3 +1,5 @@
+"""Models module for trivia app."""
+
 import os
 from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
@@ -58,6 +60,7 @@ class Question(db.Model):
     """
     Insert question.
 
+    :param self:
     :return:
     """
     db.session.add(self)
@@ -67,6 +70,7 @@ class Question(db.Model):
     """
     Update question.
 
+    :param self:
     :return:
     """
     db.session.commit()
@@ -75,6 +79,7 @@ class Question(db.Model):
     """
     Delete question.
 
+    :param self:
     :return:
     """
     db.session.delete(self)
@@ -105,6 +110,7 @@ class Category(db.Model):
     """
     Init method.
 
+    :param self:
     :param type:
     """
     self.type = type
@@ -113,6 +119,7 @@ class Category(db.Model):
     """
     Format method.
 
+    :param self:
     :return:
     """
     return {

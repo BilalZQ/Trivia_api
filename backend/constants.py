@@ -2,9 +2,13 @@
 from http.client import BAD_REQUEST
 
 
+"""Constants module for trivia app."""
+
 QUESTIONS_PER_PAGE = 10
 
 class HTTP_STATUS:
+    """Class holding http status codes."""
+
     NOT_FOUND = 404
     NO_CONTENT = 204
     BAD_REQUEST = 400
