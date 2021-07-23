@@ -232,7 +232,8 @@ class TriviaTestCase(unittest.TestCase):
         :param self:
         :return:
         """
-        response = self.client().get(f'/categories/{self.test_category}/questions')
+        response = self.client().get(
+            f'/categories/{self.test_category}/questions')
         data = json.loads(response.data)
 
         self.assertEqual(response.status_code, HTTP_STATUS.OK)

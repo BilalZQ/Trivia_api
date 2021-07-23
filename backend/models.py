@@ -27,102 +27,96 @@ def setup_db(app, database_path=database_path):
     db.init_app(app)
     db.create_all()
 
-'''
-Question
 
-'''
 class Question(db.Model):
-  """Question Model."""
+    """Question Model."""
 
-  __tablename__ = 'questions'
+    __tablename__ = 'questions'
 
-  id = Column(Integer, primary_key=True)
-  question = Column(String)
-  answer = Column(String)
-  category = Column(String)
-  difficulty = Column(Integer)
+    id = Column(Integer, primary_key=True)
+    question = Column(String)
+    answer = Column(String)
+    category = Column(String)
+    difficulty = Column(Integer)
 
-  def __init__(self, question, answer, category, difficulty):
-    """
-    Init method.
+    def __init__(self, question, answer, category, difficulty):
+        """
+        Init method.
 
-    :param question:
-    :param answer:
-    :param category:
-    :param difficulty:
-    """
-    self.question = question
-    self.answer = answer
-    self.category = category
-    self.difficulty = difficulty
+        :param question:
+        :param answer:
+        :param category:
+        :param difficulty:
+        """
+        self.question = question
+        self.answer = answer
+        self.category = category
+        self.difficulty = difficulty
 
-  def insert(self):
-    """
-    Insert question.
+    def insert(self):
+        """
+        Insert question.
 
-    :param self:
-    :return:
-    """
-    db.session.add(self)
-    db.session.commit()
+        :param self:
+        :return:
+        """
+        db.session.add(self)
+        db.session.commit()
 
-  def update(self):
-    """
-    Update question.
+    def update(self):
+        """
+        Update question.
 
-    :param self:
-    :return:
-    """
-    db.session.commit()
+        :param self:
+        :return:
+        """
+        db.session.commit()
 
-  def delete(self):
-    """
-    Delete question.
+    def delete(self):
+        """
+        Delete question.
 
-    :param self:
-    :return:
-    """
-    db.session.delete(self)
-    db.session.commit()
+        :param self:
+        :return:
+        """
+        db.session.delete(self)
+        db.session.commit()
 
-  def format(self):
-    return {
-      'id': self.id,
-      'question': self.question,
-      'answer': self.answer,
-      'category': self.category,
-      'difficulty': self.difficulty
-    }
+    def format(self):
+        return {
+          'id': self.id,
+          'question': self.question,
+          'answer': self.answer,
+          'category': self.category,
+          'difficulty': self.difficulty
+        }
 
-'''
-Category
 
-'''
 class Category(db.Model):
-  """Category Model."""
+    """Category Model."""
 
-  __tablename__ = 'categories'
+    __tablename__ = 'categories'
 
-  id = Column(Integer, primary_key=True)
-  type = Column(String)
+    id = Column(Integer, primary_key=True)
+    type = Column(String)
 
-  def __init__(self, type):
-    """
-    Init method.
+    def __init__(self, type):
+        """
+        Init method.
 
-    :param self:
-    :param type:
-    """
-    self.type = type
+        :param self:
+        :param type:
+        """
+        self.type = type
 
-  def format(self):
-    """
-    Format method.
+    def format(self):
+        """
+        Format method.
 
-    :param self:
-    :return:
-    """
-    return {
-      'id': self.id,
-      'type': self.type
-    }
+        :param self:
+        :return:
+        """
+        return {
+            'id': self.id,
+            'type': self.type
+        }
