@@ -31,7 +31,7 @@ def paginated_data(request, model, order_by, default_limit):
     queryset = model.query.order_by(order_by).limit(
         page_limit).offset(page_limit * index).all()
 
-    return [row.format()for row in queryset] \
+    return [row.format() for row in queryset] \
         if queryset else [], model.query.count()
 
 
