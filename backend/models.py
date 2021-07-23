@@ -5,16 +5,16 @@ from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-database_name = "trivia"
-test_database_name = "trivia_test"
+DB_HOST = os.getenv('DB_HOST', '127.0.0.1:5432')
+DB_USER = os.getenv('DB_USER', 'postgres')
+DB_PASSWORD = os.getenv('DB_PASSWORD', 'postgres')
+DB_NAME = os.getenv('DB_NAME', 'trivia')
+TEST_DB_NAME = os.getenv('DB_NAME', 'trivia_test')
 
-# database_host = 'localhost:5432'
-database_host = ''
+base_path = f'postgres://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/'
 
-base_path = f'postgres://{database_host}/'
-
-database_path = f"{base_path}{database_name}"
-test_database_path = f"{base_path}{test_database_name}"
+database_path = f"{base_path}{DB_NAME}"
+test_database_path = f"{base_path}{TEST_DB_NAME}"
 
 db = SQLAlchemy()
 
