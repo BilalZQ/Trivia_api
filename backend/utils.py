@@ -28,7 +28,8 @@ def paginated_data(request, queryset, page_limit):
     start = (page - 1) * page_limit
     end = start + page_limit
 
-    return [row.format() for row in queryset[start:end]]
+    return [row.format()for row in queryset[start:end]] \
+        if queryset else []
 
 
 def error_response(http_status):
