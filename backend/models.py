@@ -6,9 +6,15 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 
 database_name = "trivia"
+test_database_name = "trivia_test"
+
 # database_host = 'localhost:5432'
 database_host = ''
-database_path = f"postgres://{database_host}/{database_name}"
+
+base_path = f'postgres://{database_host}/'
+
+database_path = f"{base_path}{database_name}"
+test_database_path = f"{base_path}{test_database_name}"
 
 db = SQLAlchemy()
 

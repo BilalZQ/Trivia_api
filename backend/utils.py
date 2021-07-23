@@ -15,7 +15,7 @@ def get_formatted_categories():
     return {category.id: category.type for category in categories}
 
 
-def paginated_data(request, queryset, page_limit):
+def paginated_data(request, model, order_by, default_limit):
     """
     Get paginated data.
 
@@ -24,12 +24,15 @@ def paginated_data(request, queryset, page_limit):
     :param page_limit:
     :return:
     """
-    page = request.args.get('page', 1, type=int)
-    start = (page - 1) * page_limit
-    end = start + page_limit
+    page_limit = request.args.get('limit', default_limit, type=int)
+    selected_page = request.args.get('page', 1, type=int)
+    index = selected_page - 1
 
-    return [row.format()for row in queryset[start:end]] \
-        if queryset else []
+    queryset = model.query.order_by(order_by).limit(
+        page_limit).offset(selected_page * index).all()
+
+    return [row.format()for row in queryset] \
+        if queryset else [], model.query.count()
 
 
 def error_response(http_status):

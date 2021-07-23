@@ -6,7 +6,7 @@ import json
 from flask_sqlalchemy import SQLAlchemy
 
 from flaskr import create_app
-from models import setup_db, Question, Category, database_path
+from models import setup_db, Question, Category, test_database_path
 from constants import HTTP_STATUS, ERROR_MESSAGES
 
 
@@ -17,8 +17,7 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "trivia_test"
-        self.database_path = database_path
+        self.database_path = test_database_path
         setup_db(self.app, self.database_path)
 
         self.test_category = 1

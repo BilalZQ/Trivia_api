@@ -60,10 +60,8 @@ def create_app(test_config=None):
 
         :return:
         """
-        questions = Question.query.order_by(Question.id).all()
-
-        paginated_response = paginated_data(
-            request, questions, QUESTIONS_PER_PAGE)
+        paginated_response, questions_count = paginated_data(
+            request, Question, Question.id, QUESTIONS_PER_PAGE)
 
         if not paginated_response:
             abort(HTTP_STATUS.NOT_FOUND)
@@ -71,7 +69,7 @@ def create_app(test_config=None):
         return jsonify({
           'success': True,
           'questions': paginated_response,
-          'total_questions': len(questions),
+          'total_questions': questions_count,
           'categories': get_formatted_categories(),
           'current_category': None
         })
